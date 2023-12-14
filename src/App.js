@@ -47,8 +47,6 @@ function App() {
   } = data;
 
   const getUser = async () => {
-    setLoading(true);
-
     try {
       const response = await axios.get(url);
       if (response.data.results.length > 0) {
@@ -66,6 +64,7 @@ function App() {
   };
 
   useEffect(() => {
+    setLoading(true);
     getUser();
   }, []);
 
