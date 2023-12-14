@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
+import swal from "sweetalert";
+import Loading from "./components/Loading";
 
 import mailSvg from "./assets/mail.svg";
 import manSvg from "./assets/man.svg";
@@ -18,6 +20,7 @@ const defaultImage = "https://randomuser.me/api/portraits/men/75.jpg";
 
 function App() {
   const [showData, setShowData] = useState("name");
+  const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState([]);
   const [data, setData] = useState({
     name: "",
@@ -28,6 +31,7 @@ function App() {
     phone: "",
     gender: "",
     login: "",
+    id: "",
   });
 
   const {
@@ -38,29 +42,57 @@ function App() {
     phone,
     picture,
     gender,
-    login: { username ,uuid },
+    login: { username },
+    id: { value },
   } = data;
 
-  const getUser = () => {
-    axios
-      .get(url)
-      .then((res) => setData(res.data.results[0]))
-      .catch((err) => console.log(err));
+  const getUser = async () => {
+    setLoading(true);
+
+    try {
+      const response = await axios.get(url);
+      if (response.data.results.length > 0) {
+        setData(response.data.results[0]);
+      } else {
+        // Handle the case when there is no data
+        setData(null);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      // Handle the error, e.g., show an error message to the user
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    const firstUser = getUser();
-
-    // return () => {
-    //   second
-    // }
+    getUser();
   }, []);
 
   const handleAdd = () => {
-    setUsers([...users, { name: name, email: email, phone: phone, age: age ,uuid:uuid}]);
+    if (users.some((user) => user.value === value)) {
+      swal({
+        text: "This user is already added!",
+        icon: "warning",
+        button: "OK!",
+      });
+    } else {
+      setUsers([
+        ...users,
+        { name: name, email: email, phone: phone, age: age, value: value },
+      ]);
+    }
   };
 
   console.log(data);
+
+  if (loading) {
+    return (
+      <main>
+        <Loading />
+      </main>
+    );
+  }
 
   return (
     <main>
@@ -182,8 +214,8 @@ function App() {
               </tr>
             </thead>
             <tbody>
-              {users.map(({name,age,city,phone}) => (
-                <tr  key={uuid} className="body-tr">
+              {users.map(({ name, age, phone, email, value }) => (
+                <tr key={value} className="body-tr">
                   <td className="th">
                     {name.first} {name.last}
                   </td>
