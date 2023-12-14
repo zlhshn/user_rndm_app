@@ -227,9 +227,9 @@ function App() {
           </table>
         </div>
       </div>
-      <div style={{ display: "flex", justifyContent: "center" }}>
+      {/* <div style={{ display: "flex", justifyContent: "center" }}>
         <Footer />
-      </div>
+      </div> */}
     </main>
   );
 }
