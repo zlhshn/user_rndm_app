@@ -35,7 +35,7 @@ function App() {
   });
 
   const {
-    name,
+    name: { first, last },
     email,
     dob: { age },
     location: { city },
@@ -45,19 +45,20 @@ function App() {
     login: { username },
     id: { value },
   } = data;
+  const [info, setInfo] = useState();
 
   const getUser = async () => {
     try {
       const response = await axios.get(url);
       if (response.data.results.length > 0) {
         setData(response.data.results[0]);
+        
+        
       } else {
-        // Handle the case when there is no data
         setData(null);
       }
     } catch (error) {
       console.error("Error:", error);
-      // Handle the error, e.g., show an error message to the user
     } finally {
       setLoading(false);
     }
@@ -66,6 +67,7 @@ function App() {
   useEffect(() => {
     setLoading(true);
     getUser();
+    handleMouseEnter(data.name, "name")
   }, []);
 
   const handleAdd = () => {
@@ -78,12 +80,16 @@ function App() {
     } else {
       setUsers([
         ...users,
-        { name: name, email: email, phone: phone, age: age, value: value },
+        { name: first+ " " + last, email: email, phone: phone, age: age, value: value },
       ]);
     }
   };
 
-  console.log(data);
+  const handleMouseEnter = (info, category) => {
+    setInfo(info);
+    setShowData(category);
+  };
+
 
   if (loading) {
     return (
@@ -102,54 +108,17 @@ function App() {
         <div className="container">
           <img src={picture.large} alt="random user" className="user-img" />
 
-          {showData === "name" && (
-            <>
-              <p className="user-title">My name is </p>
-              <p className="user-value">
-                {" "}
-                {name.first} {name.last}
-              </p>
-            </>
-          )}
-
-          {showData === "email" && (
-            <>
-              <p className="user-title">My email is </p>
-              <p className="user-value"> {email}</p>
-            </>
-          )}
-          {showData === "age" && (
-            <>
-              <p className="user-title">My age is </p>
-              <p className="user-value"> {age}</p>
-            </>
-          )}
-          {showData === "city" && (
-            <>
-              <p className="user-title">My city is </p>
-              <p className="user-value"> {city}</p>
-            </>
-          )}
-          {showData === "phone" && (
-            <>
-              <p className="user-title">My phone is </p>
-              <p className="user-value"> {phone}</p>
-            </>
-          )}
-          {showData === "username" && (
-            <>
-              <p className="user-title">My username is </p>
-              <p className="user-value"> {username}</p>
-            </>
-          )}
-
+          <p className="user-title">My {showData} is</p>
+          <p className="user-value">{info}</p>
           <div className="values-list">
             <button className="icon" data-label="name" on>
               <img
                 src={womanSvg}
                 alt="user"
                 id="iconImg"
-                onMouseEnter={() => setShowData("name")}
+                onMouseEnter={() =>
+                  handleMouseEnter(`${first} ${last}`, "name")
+                }
               />
             </button>
 
@@ -158,7 +127,7 @@ function App() {
                 src={mailSvg}
                 alt="mail"
                 id="iconImg"
-                onMouseEnter={() => setShowData("email")}
+                onMouseEnter={() => handleMouseEnter(email, "email")}
               />
             </button>
             <button className="icon" data-label="age">
@@ -166,7 +135,7 @@ function App() {
                 src={womanAgeSvg}
                 alt="age"
                 id="iconImg"
-                onMouseEnter={() => setShowData("age")}
+                onMouseEnter={() => handleMouseEnter(age, "age")}
               />
             </button>
             <button className="icon" data-label="city">
@@ -174,7 +143,7 @@ function App() {
                 src={mapSvg}
                 alt="map"
                 id="iconImg"
-                onMouseEnter={() => setShowData("city")}
+                onMouseEnter={() => handleMouseEnter(city, "street")}
               />
             </button>
             <button className="icon" data-label="phone">
@@ -182,7 +151,7 @@ function App() {
                 src={phoneSvg}
                 alt="phone"
                 id="iconImg"
-                onMouseEnter={() => setShowData("phone")}
+                onMouseEnter={() => handleMouseEnter(phone, "phone")}
               />
             </button>
             <button className="icon" data-label="username">
@@ -190,7 +159,7 @@ function App() {
                 src={padlockSvg}
                 alt="lock"
                 id="iconImg"
-                onMouseEnter={() => setShowData("username")}
+                onMouseEnter={() => handleMouseEnter(username, "username")}
               />
             </button>
           </div>
@@ -213,10 +182,10 @@ function App() {
               </tr>
             </thead>
             <tbody>
-              {users.map(({ name, age, phone, email, value }) => (
+              {users.map(({name, age, phone, email, value }) => (
                 <tr key={value} className="body-tr">
                   <td className="th">
-                    {name.first} {name.last}
+                    {name}
                   </td>
                   <td className="th">{email}</td>
                   <td className="th">{phone}</td>
