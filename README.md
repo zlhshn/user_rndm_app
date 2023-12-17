@@ -5,7 +5,7 @@
 Project aims to create a Random User App with react and mock-apı
 
 ## Project Live
-[randomuser](https://user-rndm-app.vercel.app/)
+[LİVE](https://user-rndm-app.vercel.app/)
 
 ## How does my project look 
 ![randomuser](./random_user.gif)
@@ -19,3 +19,7 @@ Project aims to create a Random User App with react and mock-apı
 * Axios
 * SweetAlert
 * CSS3
+
+
+## API Reference
+https://randomuser.me/api/
