@@ -5,7 +5,7 @@
 Project aims to create a Random User App with react and mock-apı
 
 ## Project Live
-[LİVE](https://user-rndm-app.vercel.app/)
+[LİVE](https://user-rndm-app-zlh.vercel.app/)
 
 ## How does my project look 
 ![randomuser](./random_user.gif)
